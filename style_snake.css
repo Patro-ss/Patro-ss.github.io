@@ -1,14 +1,14 @@
 #snake_board {
-    margin-top: 70%;
+    margin-top: 18%;
     margin-left: 50%;
     transform: translate(-50%, -50%);
 }
 #score {
     text-align: center;
     width: 100%;
-    height: 5vh;
+    height: 10vh;
     margin: 0;
-    font-size: 10vw;
+    font-size: 90px;
     background-color: lightcoral;
     color: white;
     border: solid 1px black;
