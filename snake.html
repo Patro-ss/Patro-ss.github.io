@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style_snake.css">
+    <title>Simple_snake</title>
+</head>
+<body>
+    <div id="score">0</div>
+    <canvas id="snake_board" width="600px" height="600px"></canvas>
+</body>
+<script>
+    const border_board = "black";
+    const background_board = "lightblue";
+    const color_snake = "lightgreen";
+    const border_snake = "black";
+    const color_food = "red";
+    const border_food = "black";
+
+    //Position for snake
+    let snake = [
+        {x: 220, y: 200},
+        {x: 210, y: 200},
+        {x: 200, y: 200},
+        {x: 190, y: 200}
+    ]
+
+    let score = 0;
+    let fx = 10; //horizontal
+    let fy = 0;  //vertical
+    let direction_changing = false;
+    let food_x;
+    let food_y 
+    // Get canvas && 2d
+    const snake_board = document.getElementById("snake_board");
+    const ctx_snakeboard = snake_board.getContext("2d");
+    // Start for game 
+    startGame();
+    genFood();
+    document.addEventListener("keydown", direction_change);
+
+    //Keeps game running
+    function startGame() {
+        if(hasGameEnded()) return;
+        direction_changing = false;
+        setTimeout(function onTik() {
+        canvasClear();
+        foodDraw();
+        moveSnake();
+        snakeDraw(); 
+        startGame();
+        }, 100)
+    }
+
+    //Draw a border
+    function canvasClear() {
+        ctx_snakeboard.fillStyle = background_board;
+        ctx_snakeboard.strokestyle = border_board;
+        ctx_snakeboard.fillRect(0, 0, snake_board.width, snake_board.height);
+        ctx_snakeboard.strokeRect(0, 0, snake_board.width, snake_board.height);
+    }
+
+    //Draw a snake in canvas
+    function snakeDraw() {
+        //Draw parts
+        snake.forEach(snakePartsDraw);
+    }
+
+    //Draw snake parts
+    function snakePartsDraw(snakePart) {
+        //Set color for the snake
+        ctx_snakeboard.fillStyle = color_snake;
+        //Set border color for the snake
+        ctx_snakeboard.strokestyle = border_snake;
+        //Draw a snake on the cords
+        ctx_snakeboard.fillRect(snakePart.x, snakePart.y, 10, 10);
+        //Draw a border for snake on the cords
+        ctx_snakeboard.strokeRect(snakePart.x, snakePart.y, 10, 10);
+    }
+    function foodDraw() {
+        ctx_snakeboard.fillStyle = color_food;
+        ctx_snakeboard.strokeStyle = border_snake;
+        ctx_snakeboard.fillRect(food_x, food_y, 10, 10);
+        ctx_snakeboard.strokeRect(food_x, food_y, 10, 10);
+    }
+    function randomFoodGenerator(min, max) {
+        return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+    } 
+    function genFood() {
+        //Generate a random number for cords of food_x 
+        food_x = randomFoodGenerator(0, snake_board.width - 10);
+        //Generate a random number for cords of food_y
+        food_y = randomFoodGenerator(0, snake_board.height - 10);
+        snake.forEach(function hasSnakeEatenFood(parts) {
+            const has_eaten = parts.x == food_x && parts.y == food_y;
+            if(has_eaten) genFood();
+        });
+    }
+    function moveSnake() {
+        //Create new head for snake
+        const head = {x: snake[0].x + fx, y: snake[0].y + fy};
+        //Add new head to beginning snake body 
+        snake.unshift(head);
+        const snake_has_eat_food = snake[0].x === food_x && snake[0].y === food_y;
+        if(snake_has_eat_food) {
+            //Score gets incrased
+            score +=1;
+            //Screen gets displayed
+            document.getElementById('score').innerHTML = score.toString();
+            //Gen new food location
+            genFood();
+        } else {
+            //Snake get remove last part of the body
+            snake.pop();
+        }
+    }
+    function direction_change(event) {
+        const UP_KEY = 87 /*|| 38*/;
+        const DOWN_KEY = 83 /*&& 40*/ ;
+        const LEFT_KEY = 65 /*&& 37*/;
+        const RIGHT_KEY = 68 /*|| 39*/;
+    
+        if(direction_changing) return;
+        direction_changing = true;
+        const keyPressed = event.keyCode;
+        const upGoing = fy === -10;
+        const downGoing = fy === -10;
+        const leftGoing = fx === -10;
+        const rightGoing = fx === 10;
+        if(keyPressed === UP_KEY && !downGoing) {
+            fx = 0;
+            fy = -10;
+        }
+        else if(keyPressed === DOWN_KEY && !upGoing) {
+            fx = 0;
+            fy = 10;
+        }
+        else if(keyPressed === LEFT_KEY && !rightGoing) {
+            fx = -10;
+            fy = 0;
+        }
+        else if(keyPressed === RIGHT_KEY && !leftGoing) {
+            fx = 10;
+            fy = 0;
+        }
+    }
+    function hasGameEnded() {
+        for(let i = 4; i < snake.length; i++) {
+            if(snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true
+        }
+        const hitUpWall = snake[0].y < 0;
+        const hitDownWall = snake[0].y > snake_board.height - 10;
+        const hitLeftWall = snake[0].x < 0;
+        const hitRightWall = snake[0].x > snake_board.height - 10;
+        return hitUpWall || hitDownWall || hitLeftWall || hitRightWall;
+    }
+</script>
+</html>
