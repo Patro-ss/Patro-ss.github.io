@@ -6,7 +6,10 @@
 }
 #score {
     text-align: center;
-    font-size: 120px;
+    width: 100%;
+    height: 20%;
+    margin: 0;
+    font-size: 10vw;
     background-color: lightcoral;
     color: white;
     border: solid 1px black;
