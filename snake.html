@@ -111,6 +111,9 @@
             document.getElementById('score').innerHTML = score;
             //Gen new food location
             genFood();
+        } else {
+            //Snake get remove last part of the body
+            snake.pop();
         }
     }
     function direction_change(event) {
