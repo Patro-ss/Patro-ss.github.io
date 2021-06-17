@@ -53,4 +53,14 @@ body {
         color: white;
         border: solid 1px black;
     }
+    #buttons {
+        text-align: center;
+        padding: 20px;
+        margin-top: -130px;
+    }
+    .buttons_for {
+        width: 35%;
+        height: 25%;
+        padding: 8px;
+    }
 }
